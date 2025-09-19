@@ -25,13 +25,13 @@
 
 ## 📝 Modification Summary
 
-**Date:** `2025-01-07`
-**Developer:** `Claude (AI Assistant)`
-**Script:** `build-template, image-update, install.sh`
+**Date:** `2025-01-07` **Developer:** `Claude (AI Assistant)` **Script:**
+`build-template, image-update, install.sh`
 
 ### What am I modifying?
 
-Fixing critical bugs and implementing security/reliability improvements for the Proxmox template builder scripts:
+Fixing critical bugs and implementing security/reliability improvements for the
+Proxmox template builder scripts:
 
 - Fix local variable scope bug in build-template line 326
 - Add VM ID existence checking before creation
@@ -46,7 +46,8 @@ Fixing critical bugs and implementing security/reliability improvements for the 
 Based on code review feedback identifying:
 
 - Bug that would cause script failure (local variable in wrong scope)
-- Missing security validations (no GPG verification, no checksum file validation)
+- Missing security validations (no GPG verification, no checksum file
+  validation)
 - Lack of operational features (no logging, no dry-run mode)
 - Missing error recovery mechanisms
 
@@ -81,7 +82,8 @@ build-template -i 9022 -n ubuntu22 --img /path/to/image.img --ssh-keys ~/.ssh/id
 ### Script Header
 
 - [x] Has proper error handling: `set -euo pipefail`
-- [x] Has error trap: `trap 'echo "Error occurred at line $LINENO. Exit code: $?" >&2' ERR`
+- [x] Has error trap:
+      `trap 'echo "Error occurred at line $LINENO. Exit code: $?" >&2' ERR`
 
 ### For Tool Installations (bootstrap.sh, install scripts)
 
@@ -307,8 +309,8 @@ check_storage() {
 
 ## 👨‍💼 Senior Developer/Reviewer Section
 
-**Reviewer Name:** `[Actual Reviewer Name Required]`
-**Review Date:** `2025-01-07`
+**Reviewer Name:** `[Actual Reviewer Name Required]` **Review Date:**
+`2025-01-07`
 
 ### 1. Checklist Review
 
@@ -316,13 +318,16 @@ check_storage() {
 - [x] Understand what was changed and why
 - [x] Developer's self-validation results noted
 
-**✅ ACTUAL TESTING PERFORMED:** The following tests were completed on the development environment:
+**✅ ACTUAL TESTING PERFORMED:** The following tests were completed on the
+development environment:
 
 ### 2. Compliance Check
 
 - [x] Compared changes against full CODING_STANDARDS.md
-- [x] Error handling properly implemented (traps working, cleanup function added)
-- [x] Logging comprehensive and follows standards (logs to /tmp when /var/log unavailable)
+- [x] Error handling properly implemented (traps working, cleanup function
+      added)
+- [x] Logging comprehensive and follows standards (logs to /tmp when /var/log
+      unavailable)
 - [x] Security practices followed (permissions checked, validation added)
 - [x] Documentation clear and complete (help text updated with new options)
 
@@ -359,12 +364,15 @@ check_storage() {
 - Original scripts have valid bash syntax (confirmed with `bash -n`)
 - Error handling patterns are already in place with proper traps
 - Scripts are well-structured and follow many best practices
-- The alleged "local variable bug" was incorrect - `main` IS properly defined as a function
+- The alleged "local variable bug" was incorrect - `main` IS properly defined as
+  a function
 
 **Issues Found (via shellcheck):**
 
-1. **build-template:326**: SC2155 - `local qm_cmd=...` should declare and assign separately
-2. **install.sh:63**: SC2046 - Date command output needs quoting in backup filename
+1. **build-template:326**: SC2155 - `local qm_cmd=...` should declare and assign
+   separately
+2. **install.sh:63**: SC2046 - Date command output needs quoting in backup
+   filename
 3. **install.sh:74-75**: SC2086 - Variable needs quoting in systemd commands
 
 **Testing Completed:**
@@ -470,7 +478,8 @@ ssh root@proxmoxt430 "/tmp/build-template.enhanced --dry-run -i 9023 -n test"
 # Dry-run mode works, logs to /var/log/
 ```
 
-**Conclusion:** Scripts are production-ready and working correctly on Proxmox VE 8.4.9. The enhancements (logging, dry-run) add value and work as expected.
+**Conclusion:** Scripts are production-ready and working correctly on Proxmox VE
+8.4.9. The enhancements (logging, dry-run) add value and work as expected.
 
 ---
 
@@ -499,4 +508,5 @@ tail -f /var/log/proxmox-templates-install-*.log
 
 ---
 
-**Remember:** This checklist is about catching the important stuff, not perfection. Focus on what matters for your specific change.
+**Remember:** This checklist is about catching the important stuff, not
+perfection. Focus on what matters for your specific change.
