@@ -21,6 +21,7 @@ The secret scanning is automatically configured with:
 
 The scanning behavior is controlled by `.infisical-scan.toml`:
 
+- **Baseline**: `.infisical-baseline.json` contains acceptable findings from initial repository scan
 - **Allowlist**: Regex patterns for acceptable content (templates, examples, docs)
 - **Exclusions**: Paths to ignore (.git, node_modules)
 - **Performance**: File size limits and scanning optimization
@@ -53,6 +54,21 @@ infisical scan git-changes --staged
 ### Update configuration
 
 Edit `.infisical-scan.toml` to adjust scanning rules, add new allowlist patterns,
+or modify exclusions as needed.
+
+### Regenerate baseline
+
+If you need to update the baseline after reviewing the repository:
+
+```bash
+# Generate new baseline (review findings first!)
+infisical scan --report-format json --report-path .infisical-baseline.json
+
+# Commit the updated baseline
+git add .infisical-baseline.json
+git commit -m "update: regenerate Infisical baseline"
+```
+
 or modify exclusions as needed.
 
 ## Common false positives

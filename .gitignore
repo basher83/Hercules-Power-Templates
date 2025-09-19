@@ -53,5 +53,6 @@ log/
 *.tar.gz
 node_modules/
 
-# Infisical scan reports (if generated)
+# Infisical scan reports (if generated) - but track the baseline
 .infisical-scan-report.*
+!.infisical-baseline.json
