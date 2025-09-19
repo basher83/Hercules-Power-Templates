@@ -1,0 +1,11 @@
+[Unit]
+Description=Check for updated cloud image %i (Enhanced)
+Documentation=https://github.com/trfore/proxmox-template-scripts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/image-update.enhanced %i --remove
+StandardOutput=journal
+StandardError=journal

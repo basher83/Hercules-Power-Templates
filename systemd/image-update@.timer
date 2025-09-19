@@ -1,0 +1,14 @@
+[Unit]
+Description=Check for updated cloud image %i
+Documentation=https://github.com/trfore/proxmox-template-scripts
+Wants=network-online.target
+
+[Timer]
+OnCalendar=*-*-01 01:00:00
+AccuracySec=1m
+RandomizedDelaySec=3h
+Persistent=true
+Unit=image-update@%i.service
+
+[Install]
+WantedBy=timers.target

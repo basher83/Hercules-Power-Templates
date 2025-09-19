@@ -1,0 +1,30 @@
+[settings]
+auto_install = true
+not_found_auto_install = true
+
+[tools]
+eza = "0.23.3"
+fd = "10.3.0"
+pre-commit = "4.3.0"
+prettier = "3.6.2"
+rg = "14.1.1"
+shellcheck = "0.11.0"
+
+[tasks.lint]
+description = "Run linting tasks"
+depends = ["shellcheck", "prettier", "pre-commit"]
+
+[tasks."lint:shellcheck"]
+description = "Run shellcheck"
+run = "shellcheck scripts/*.sh"
+tools = { "shellcheck" = "0.11.0" }
+
+[tasks."lint:prettier"]
+description = "Run prettier"
+run = "prettier --check ."
+tools = { "prettier" = "3.6.2" }
+
+[tasks."lint:pre-commit"]
+description = "Run pre-commit"
+run = "pre-commit run --all-files"
+tools = { "pre-commit" = "4.3.0" }

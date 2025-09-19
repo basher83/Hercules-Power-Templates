@@ -1,0 +1,54 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# macOS specific
+.AppleDouble
+.LSOverride
+Icon
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux specific
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+log/
+
+# Editor directories
+.vscode/
+.idea/
+*.sw?
+
+# Proxmox-specific files
+*.iso
+*.qcow2
+*.vmdk
+*.ova
+*.raw
+*.vdi
+*.img
+*.xz
+*.gz
+*.tar.gz
+node_modules/

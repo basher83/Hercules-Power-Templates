@@ -1,0 +1,18 @@
+name: Use Sync Labels Workflow
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # 00:00 on Monday
+  workflow_dispatch: # Allows manual triggering
+  # You could also add 'schedule', 'push', etc. triggers if needed
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  sync-labels:
+    uses: basher83/.github/.github/workflows/sync-labels.yml@7332a946a16984232bc2a5225882ec3f8d7de670 # main
+    # with:
+    #   label_definitions_url: "https://raw.githubusercontent.com/basher83/docs/main/mission-control/github-configs/label-definitions.yml" # optional, can omit for default

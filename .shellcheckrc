@@ -1,0 +1,19 @@
+# ShellCheck configuration file for Hercules-Power-Templates
+# Use the directory of the script being checked for sourcing
+source-path=SCRIPTDIR
+
+# Add scripts directory for sourced libraries
+source-path=scripts
+
+# Common exclusions for this project
+# SC1091: Not following sourced files (common in CI/template environments)
+# SC2155: Declare and assign separately (style preference for complex assignments)
+# SC2329: Function never invoked (trap functions and cleanup handlers)
+# SC2248: Prefer double quoting (style preference, not functional issue)
+# SC2046: Quote command substitution (style preference for simple commands)
+# SC2086: Double quote to prevent globbing (acceptable in systemd unit names)
+disable=SC1091,SC2155,SC2329,SC2248,SC2046,SC2086
+
+# Enable additional optional checks for better code quality
+enable=quote-safe-variables
+enable=check-unassigned-uppercase
