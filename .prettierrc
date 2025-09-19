@@ -2,8 +2,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "printWidth": 100,
-  "singleQuote": true,
-  "trailingComma": "es5",
+  "singleQuote": false,
   "bracketSpacing": true,
   "endOfLine": "lf",
   "overrides": [
@@ -15,17 +14,25 @@
       }
     },
     {
-      "files": "*.yaml",
+      "files": ["*.yaml", "*.yml"],
+      "options": {
+        "singleQuote": false,
+        "tabWidth": 2,
+        "bracketSpacing": true
+      }
+    },
+    {
+      "files": "*.json",
       "options": {
         "singleQuote": false,
         "tabWidth": 2
       }
     },
     {
-      "files": "*.yml",
+      "files": ["CHANGELOG.md", "WARP.md", "README.md"],
       "options": {
-        "singleQuote": false,
-        "tabWidth": 2
+        "printWidth": 80,
+        "proseWrap": "preserve"
       }
     }
   ]
