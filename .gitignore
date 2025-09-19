@@ -52,3 +52,6 @@ log/
 *.gz
 *.tar.gz
 node_modules/
+
+# Infisical scan reports (if generated)
+.infisical-scan-report.*

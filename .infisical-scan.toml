@@ -1,0 +1,36 @@
+# Infisical Secret Scanning Configuration
+# https://infisical.com/docs/cli/scanning-overview
+
+title = "Hercules-Power-Templates Secret Scan"
+
+[extend]
+useDefault = true
+
+# Custom allowlist for common false positives in infrastructure repos
+[allowlist]
+regexes = [
+    # Template variables and placeholders
+    '''\{\{.*\}\}''',
+    # Example/dummy values
+    '''example\.com''',
+    '''localhost''',
+    '''127\.0\.0\.1''',
+    # Documentation URLs
+    '''https?://docs\.''',
+    '''https?://github\.com/''',
+    # Standard system paths
+    '''/var/lib/vz/''',
+    '''/etc/systemd/''',
+    # Template placeholders
+    '''\$\{[^}]+\}''',
+    '''%[a-zA-Z]'''
+]
+
+# Paths to exclude (regex patterns)
+paths = [
+    '''^\.git/''',
+    '''node_modules/'''
+]
+
+[scan]
+maxTargetMegabytes = 10
