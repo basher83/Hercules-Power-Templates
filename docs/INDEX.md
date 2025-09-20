@@ -9,12 +9,17 @@
 
 ### Security Documentation
 
-- **[Systemd Security Hardening](systemd-security.md)** - Security constraints for unattended execution
-- **[Secret Scanning Setup](secret-scanning.md)** - Infisical configuration and usage
-- **[Compliance Checklist](compliance-checklist-20250107.md)** - Security audit and compliance tracking
+- **[Systemd Security Hardening](systemd-security.md)** - Security constraints
+  for unattended execution
+- **[Secret Scanning Setup](secret-scanning.md)** - Infisical configuration and
+  usage
+- **[Compliance Checklist](compliance-checklist-20250107.md)** - Security audit
+  and compliance tracking
 
 ### Development Guides
 
+- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute and create
+  releases
 - **[Change Log](../CHANGELOG.md)** - Version history and recent improvements
 - **[AI Assistant Guide](../CLAUDE.md)** - Claude Code development guidance
 - **[Warp Terminal Guide](../WARP.md)** - Warp terminal integration
@@ -39,7 +44,8 @@
 ### Template Creation
 
 1. [Project README](../README.md#template-creation) - Complete template options
-2. [Quick Start Guide](quick-start.md#create-your-first-template) - Basic examples
+2. [Quick Start Guide](quick-start.md#create-your-first-template) - Basic
+   examples
 
 ### Security & Hardening
 

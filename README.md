@@ -57,21 +57,50 @@ Hercules-Power-Templates/
 
 ## Installation
 
-### Automated Installation (Recommended)
+### Quick Install (Recommended)
 
-1. Clone the repository:
+On your Proxmox host, run:
+
+```bash
+# Using curl
+curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+
+# Or using wget
+wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+```
+
+### Verified Installation
+
+For security-conscious users who want to review the script first:
+
+```bash
+# Download and review the installer
+wget https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh
+less install.sh
+
+# Run the installer
+sudo bash install.sh
+```
+
+### Development Installation
+
+For development or customization:
+
+1. Clone the repository (requires git):
 
    ```bash
-   git clone https://github.com/your-org/Hercules-Power-Templates.git
+   git clone https://github.com/YOUR-ORG/Hercules-Power-Templates.git
    cd Hercules-Power-Templates
    ```
 
 2. Run the installation script:
    ```bash
-   ./scripts/install.sh
+   sudo ./scripts/install.sh
    ```
 
 ### Manual Installation
+
+If you prefer to install manually or the automated installer doesn't work
 
 1. Copy scripts to system directories:
 

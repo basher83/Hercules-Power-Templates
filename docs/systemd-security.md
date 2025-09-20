@@ -1,20 +1,26 @@
 # Systemd Service Security Hardening
 
-The `image-update@.service` has been hardened with multiple security directives to ensure safe unattended execution. This document explains each security measure.
+The `image-update@.service` has been hardened with multiple security directives
+to ensure safe unattended execution. This document explains each security
+measure.
 
 ## Security Directives
 
 ### File System Protection
 
-- **`UMask=0077`**: Ensures newly created files are only readable by owner (no group/world access)
+- **`UMask=0077`**: Ensures newly created files are only readable by owner (no
+  group/world access)
 - **`PrivateTmp=yes`**: Provides isolated `/tmp` and `/var/tmp` directories
-- **`ProtectSystem=strict`**: Makes entire file system read-only except for paths in `ReadWritePaths`
+- **`ProtectSystem=strict`**: Makes entire file system read-only except for
+  paths in `ReadWritePaths`
 - **`ProtectHome=yes`**: Makes `/home`, `/root`, and `/run/user` inaccessible
-- **`ReadWritePaths=/var/lib/vz/template/iso /var/log /var/lock`**: Only these paths are writable
+- **`ReadWritePaths=/var/lib/vz/template/iso /var/log /var/lock`**: Only these
+  paths are writable
 
 ### Process Isolation
 
-- **`NoNewPrivileges=yes`**: Prevents privilege escalation via setuid/setgid binaries
+- **`NoNewPrivileges=yes`**: Prevents privilege escalation via setuid/setgid
+  binaries
 - **`RestrictSUIDSGID=yes`**: Prevents setuid/setgid bit manipulation
 - **`RestrictNamespaces=yes`**: Prevents creating new namespaces
 - **`LockPersonality=yes`**: Prevents changing execution domain
@@ -40,8 +46,10 @@ The `image-update@.service` has been hardened with multiple security directives 
 The hardening ensures:
 
 1. **Minimal Attack Surface**: Script only has access to necessary directories
-2. **No Privilege Escalation**: Cannot gain additional privileges during execution
-3. **Isolated Execution**: Temporary files are private and cleaned up automatically
+2. **No Privilege Escalation**: Cannot gain additional privileges during
+   execution
+3. **Isolated Execution**: Temporary files are private and cleaned up
+   automatically
 4. **Protected System**: Cannot modify system files or kernel parameters
 
 ## Required Directories
@@ -93,11 +101,13 @@ If the service fails due to permissions:
 
 ## Rolling Back
 
-If security hardening causes issues, you can temporarily reduce restrictions by commenting out specific directives in the service file and reloading:
+If security hardening causes issues, you can temporarily reduce restrictions by
+commenting out specific directives in the service file and reloading:
 
 ```bash
 systemctl daemon-reload
 systemctl restart image-update@ubuntu-22.service
 ```
 
-However, it's recommended to keep all security measures enabled for production use.
+However, it's recommended to keep all security measures enabled for production
+use.

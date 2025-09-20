@@ -2,14 +2,17 @@
 
 ## Installation (2 minutes)
 
-```bash
-# Clone the repository
-git clone https://github.com/your-org/Hercules-Power-Templates.git
-cd Hercules-Power-Templates
+On your Proxmox host, simply run:
 
-# Run the installation script
-sudo ./scripts/install.sh
+```bash
+# Quick install with curl
+curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+
+# Or with wget
+wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 ```
+
+No git required! The installer downloads everything needed.
 
 ## Create Your First Template (5 minutes)
 
