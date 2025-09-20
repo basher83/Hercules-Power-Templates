@@ -1,28 +1,34 @@
 # Secret Scanning with Infisical
 
-This repository is configured with Infisical secret scanning to prevent accidental
-commits of sensitive information.
+This repository is configured with Infisical secret scanning to prevent
+accidental commits of sensitive information.
 
 ## Setup
 
 The secret scanning is automatically configured with:
 
 - **Infisical CLI** pre-commit hook that scans staged changes
-- **Custom configuration** in `.infisical-scan.toml` tailored for infrastructure projects
+- **Custom configuration** in `.infisical-scan.toml` tailored for infrastructure
+  projects
 - **False positive filtering** for common infrastructure patterns
 
 ## How it works
 
-1. **Pre-commit scanning**: Every time you commit, Infisical scans your staged changes for secrets
-2. **Blocked commits**: If secrets are detected, the commit is blocked with details
-3. **Custom rules**: Configured to ignore common false positives like template variables, localhost, example domains
+1. **Pre-commit scanning**: Every time you commit, Infisical scans your staged
+   changes for secrets
+2. **Blocked commits**: If secrets are detected, the commit is blocked with
+   details
+3. **Custom rules**: Configured to ignore common false positives like template
+   variables, localhost, example domains
 
 ## Configuration
 
 The scanning behavior is controlled by `.infisical-scan.toml`:
 
-- **Baseline**: `.infisical-baseline.json` contains acceptable findings from initial repository scan
-- **Allowlist**: Regex patterns for acceptable content (templates, examples, docs)
+- **Baseline**: `.infisical-baseline.json` contains acceptable findings from
+  initial repository scan
+- **Allowlist**: Regex patterns for acceptable content (templates, examples,
+  docs)
 - **Exclusions**: Paths to ignore (.git, node_modules)
 - **Performance**: File size limits and scanning optimization
 
@@ -53,8 +59,8 @@ infisical scan git-changes --staged
 
 ### Update configuration
 
-Edit `.infisical-scan.toml` to adjust scanning rules, add new allowlist patterns,
-or modify exclusions as needed.
+Edit `.infisical-scan.toml` to adjust scanning rules, add new allowlist
+patterns, or modify exclusions as needed.
 
 ### Regenerate baseline
 
@@ -82,5 +88,5 @@ The configuration already handles:
 - Documentation URLs
 - System paths: `/var/lib/vz/`, `/etc/systemd/`
 
-If you encounter new false positives, add them to the `allowlist.regexes` section
-in `.infisical-scan.toml`.
+If you encounter new false positives, add them to the `allowlist.regexes`
+section in `.infisical-scan.toml`.
