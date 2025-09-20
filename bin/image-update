@@ -295,9 +295,9 @@ function check_shasum() {
     return 1
   fi
 
-  # qcow2 images are expected to be converted into a raw format (*.img) on PVE
-  if [[ -f "${file_basename}.img" ]]; then
-    current_shasum=$(shasum -a "${shasum_algorithm}" "${file_basename}".img | awk '{print $1}')
+  # Check if the downloaded file exists with its original extension
+  if [[ -f "${download_name}" ]]; then
+    current_shasum=$(shasum -a "${shasum_algorithm}" "${download_name}" | awk '{print $1}')
   else
     log_info "Local image does not exist yet"
     return 1
@@ -569,6 +569,10 @@ function main() {
 
   readonly file_basename
 
+  # Preserve the original extension for checksum correctness
+  download_name="${file_basename}.${file_name##*.}"
+  readonly download_name
+
   # ====================================================================
   # ENHANCEMENT 7: Dry-Run Mode Implementation
   # - Shows what would happen without making changes
@@ -577,12 +581,12 @@ function main() {
   if [[ "$DRY_RUN" == "true" ]]; then
     log_info "[DRY-RUN] Would check/download image:"
     log_info "[DRY-RUN]   URL: $remote_url"
-    log_info "[DRY-RUN]   Destination: ${STORAGE_PATH}/${file_basename}.img"
+    log_info "[DRY-RUN]   Destination: ${STORAGE_PATH}/${download_name}"
     log_info "[DRY-RUN]   SHA URL: $remote_shasum_url"
 
     cd "${STORAGE_PATH}"
-    if [[ -e "${file_basename}.img" ]]; then
-      log_info "[DRY-RUN] Local image exists: ${file_basename}.img"
+    if [[ -e "${download_name}" ]]; then
+      log_info "[DRY-RUN] Local image exists: ${download_name}"
       if check_shasum; then
         log_info "[DRY-RUN] Image is up-to-date, no download needed"
       else
@@ -602,14 +606,14 @@ function main() {
 
   cd "${STORAGE_PATH}"
 
-  if [[ ! -e "${file_basename}.img" ]]; then
+  if [[ ! -e "${download_name}" ]]; then
     log_info "Image does not exist, downloading..."
-    if download_with_retry "${remote_url}" "${file_basename}.img" "cloud image"; then
-      log_info "Successfully downloaded new image: ${file_basename}.img"
+    if download_with_retry "${remote_url}" "${download_name}" "cloud image"; then
+      log_info "Successfully downloaded new image: ${download_name}"
 
       # Calculate and log the SHA for verification
       local downloaded_sha
-      downloaded_sha=$(shasum -a "${shasum_algorithm}" "${file_basename}.img" | awk '{print $1}')
+      downloaded_sha=$(shasum -a "${shasum_algorithm}" "${download_name}" | awk '{print $1}')
       log_info "Downloaded image SHA${shasum_algorithm}: $downloaded_sha"
     else
       err "Failed to download image"
@@ -630,11 +634,11 @@ function main() {
         backup_images "${file_name}"
       fi
 
-      if download_with_retry "${remote_url}" "${file_basename}.img" "cloud image"; then
-        log_info "Successfully downloaded updated image: ${file_basename}.img"
+      if download_with_retry "${remote_url}" "${download_name}" "cloud image"; then
+        log_info "Successfully downloaded updated image: ${download_name}"
 
         # Calculate and log the SHA for verification
-        local downloaded_sha=$(shasum -a "${shasum_algorithm}" "${file_basename}.img" | awk '{print $1}')
+        local downloaded_sha=$(shasum -a "${shasum_algorithm}" "${download_name}" | awk '{print $1}')
         log_info "Downloaded image SHA${shasum_algorithm}: $downloaded_sha"
       else
         err "Failed to download updated image"
@@ -644,7 +648,7 @@ function main() {
 
   # Final status
   log_info "Image update completed successfully for ${DISTRO_NAME}-${RELEASE_NAME}"
-  log_info "Final image: ${STORAGE_PATH}/${file_basename}.img"
+  log_info "Final image: ${STORAGE_PATH}/${download_name}"
   log_info "Log saved to: $LOG_FILE"
 
   exit 0

@@ -6,6 +6,24 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/image-update.enhanced %i --remove
+ExecStart=/usr/local/bin/image-update %i --remove
 StandardOutput=journal
 StandardError=journal
+
+# Security Hardening
+UMask=0077
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/vz/template/iso /var/log /var/lock
+NoNewPrivileges=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+DevicePolicy=closed
+ProtectKernelTunables=yes
+ProtectKernelLogs=yes
+ProtectClock=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+TimeoutStartSec=30min

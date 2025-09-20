@@ -23,5 +23,5 @@ repos:
     rev: v0.11.0
     hooks:
       - id: shellcheck
-        files: ^scripts/.*\.sh$
+        files: ^(bin/(image-update|build-template)|scripts/.*\.sh)$
         # Configuration handled by .shellcheckrc file
