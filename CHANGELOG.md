@@ -37,8 +37,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Development tools**: mise-based tool management
   - Automated installation of linting and formatting tools
   - Version-pinned tools (shellcheck 0.11.0, prettier 3.6.2, pre-commit 4.3.0)
-  - Custom linting tasks: `mise run lint`, `mise run lint:shellcheck`, `mise run lint:prettier`, `mise run lint:pre-commit`
-  - Convenient task runners for all quality checks
+  - **Linting tasks** (read-only checks): `mise run lint`, `mise run lint:shellcheck`, `mise run lint:prettier`
+  - **Fix tasks** (auto-repair): `mise run fix`, `mise run fix:prettier`
+  - **Pre-commit workflow**: `mise run pre-commit`, `mise run pre-commit:install`
+  - Clear separation between checking, fixing, and git workflow automation
 - **Documentation**: Comprehensive development and usage documentation
   - WARP.md for AI assistant context and development guidance
   - Secret scanning documentation with usage examples

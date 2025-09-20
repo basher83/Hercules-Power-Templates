@@ -10,21 +10,38 @@ prettier = "3.6.2"
 rg = "14.1.1"
 shellcheck = "0.11.0"
 
+# Linting tasks - check code quality (read-only)
 [tasks.lint]
-description = "Run linting tasks"
-depends = ["lint:shellcheck", "lint:prettier", "lint:pre-commit"]
+description = "Run all linting checks"
+depends = ["lint:shellcheck", "lint:prettier"]
 
 [tasks."lint:shellcheck"]
-description = "Run shellcheck"
+description = "Run shellcheck on shell scripts"
 run = "shellcheck scripts/*.sh"
 tools = { "shellcheck" = "0.11.0" }
 
 [tasks."lint:prettier"]
-description = "Run prettier"
+description = "Check code formatting with prettier"
 run = "prettier --check ."
 tools = { "prettier" = "3.6.2" }
 
-[tasks."lint:pre-commit"]
-description = "Run pre-commit"
+# Fix tasks - automatically fix issues where possible
+[tasks.fix]
+description = "Auto-fix all fixable issues"
+depends = ["fix:prettier"]
+
+[tasks."fix:prettier"]
+description = "Auto-fix code formatting with prettier"
+run = "prettier --write ."
+tools = { "prettier" = "3.6.2" }
+
+# Pre-commit workflow tasks - git hook management
+[tasks."pre-commit"]
+description = "Run all pre-commit hooks"
 run = "pre-commit run --all-files"
+tools = { "pre-commit" = "4.3.0" }
+
+[tasks."pre-commit:install"]
+description = "Install pre-commit hooks"
+run = "pre-commit install"
 tools = { "pre-commit" = "4.3.0" }

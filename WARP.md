@@ -26,21 +26,27 @@ The project uses mise for tool management. Key tools available:
 - **prettier** (3.6.2): Code formatting
 - **pre-commit** (4.3.0): Git hooks (though config not yet present)
 
-### Linting Commands
+### Development Commands
 
 ```bash
-# Run all linting tasks via mise
-mise run lint
+# Linting - check for issues (read-only)
+mise run lint             # Run all linting checks
+mise run lint:shellcheck  # Check shell scripts only
+mise run lint:prettier    # Check code formatting only
 
-# Run individual linting tasks
-mise run lint:shellcheck  # Shell script linting
-mise run lint:prettier    # Code formatting check
-mise run lint:pre-commit  # All pre-commit hooks
+# Fixing - automatically fix issues where possible
+mise run fix              # Auto-fix all fixable issues
+mise run fix:prettier     # Auto-fix formatting only
 
-# Manual linting (without mise)
-shellcheck scripts/*.sh
-prettier --check .
-pre-commit run --all-files
+# Pre-commit workflow (git hooks)
+mise run pre-commit       # Run all pre-commit hooks
+mise run pre-commit:install  # Install pre-commit hooks
+
+# Manual commands (without mise)
+shellcheck scripts/*.sh   # Check shell scripts
+prettier --check .        # Check formatting
+prettier --write .        # Fix formatting
+pre-commit run --all-files  # Run git hooks
 ```
 
 ## Core Architecture
