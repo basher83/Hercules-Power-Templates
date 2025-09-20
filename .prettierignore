@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+release/
+*.tar.gz
+
+# Claude Code configuration
+.claude/
+
+# Git
+.git/
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Binary/executable files (no formatting needed)
+bin/image-update
+bin/build-template
