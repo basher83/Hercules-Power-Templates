@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - ShellCheck linting for shell scripts
 - **Shell script linting**: ShellCheck configuration with project-specific exclusions
   - Custom `.shellcheckrc` with infrastructure-appropriate rules
-  - Executable shell script copies in `scripts/` directory for linting
+  - Linting coverage for both `bin/` executables and `scripts/` development copies
   - Exclusions for common patterns (SC1091, SC2155, SC2329, SC2248, SC2046, SC2086)
 - **Code formatting**: Prettier configuration optimized for infrastructure projects
   - Infrastructure-specific file type handling
@@ -30,9 +30,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Unified configuration for shell scripts, YAML, JSON, and Markdown
   - Proper line ending and charset settings
 - **Secret scanning**: Comprehensive Infisical secret scanning setup
-  - Pre-commit hook integration for automatic scanning
-  - Custom configuration with infrastructure-specific allowlists
-  - Baseline scan establishment for existing repository state
+  - Infisical Git hook for automatic scanning (installed via `infisical scan install --pre-commit-hook`)
+  - Custom configuration with infrastructure-specific allowlists (.infisical-scan.toml)
+  - Baseline scan establishment for existing repository state (.infisical-baseline.json)
   - Documentation for managing false positives and scanner configuration
 - **Development tools**: mise-based tool management
   - Automated installation of linting and formatting tools
@@ -62,9 +62,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
+- **Documentation**: Updated all references from old package name to repository structure
+  - README.md now references `Hercules-Power-Templates` instead of `proxmox-template-scripts`
+  - Installation instructions updated to use `./scripts/install.sh` path
+  - Package structure diagram updated to reflect actual directory layout
+
 ### Fixed
 
+- **Systemd service configuration**: Fixed incorrect script path in `image-update@.service`
+  - Changed ExecStart from non-existent `/usr/local/bin/image-update.enhanced` to `/usr/local/bin/image-update`
+  - Removed duplicate `image-update-enhanced@.service` file
+- **Dry-run mode**: Made `build-template --dry-run` truly non-mutating
+  - Added `run()` wrapper function to handle dry-run checks consistently
+  - All `qm` commands (disk import, set, resize, template) now respect dry-run mode
+  - Cloud-init configuration commands properly wrapped for dry-run support
+- **Checksum verification**: Fixed checksum mismatches for non-Ubuntu distributions
+  - Preserve original file extensions (.img for Ubuntu, .qcow2 for Debian/CentOS/Fedora)
+  - Updated `check_shasum()` to verify files with their actual extensions
+  - Documentation updated with correct file extension examples
+- **SSH key injection**: Implemented `--ssh-keys` functionality in build-template
+  - Now properly applies SSH public keys via Proxmox cloud-init integration
+  - Supports single key files or authorized_keys with multiple keys
+  - Added documentation and examples for SSH key usage
+- **Custom cloud-init username**: Added `--ci-user` flag to build-template
+  - Allows setting custom username for cloud-init default user
+  - Integrates with Proxmox's `--ciuser` parameter
+  - Useful for standardizing usernames across templates (e.g., 'admin', 'ansible')
+  - Added documentation and examples for username customization
+
 ### Removed
+
+- **Duplicate files**: Cleaned up redundant service configurations
+  - Removed `systemd/image-update-enhanced@.service` (duplicate of standard service)
+  - Removed stale references to enhanced service from documentation
 
 ### Security
 
@@ -73,3 +103,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Baseline scan established for existing repository state
   - Custom allowlist rules for infrastructure-specific false positives
   - Comprehensive documentation for team usage and management
+- **Systemd service hardening**: Added comprehensive security constraints to `image-update@.service`
+  - File system protection with `ProtectSystem=strict` and limited `ReadWritePaths`
+  - Process isolation with `NoNewPrivileges`, `RestrictSUIDSGID`, and `RestrictNamespaces`
+  - Kernel protection with `ProtectKernelTunables`, `ProtectKernelLogs`, and `ProtectClock`
+  - Capability restrictions removing all capabilities
+  - Private temporary directories with `PrivateTmp=yes`
+  - Restrictive file permissions with `UMask=0077`
+  - Documentation in `docs/systemd-security.md`

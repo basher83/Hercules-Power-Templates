@@ -151,8 +151,7 @@ ls -la /var/log/proxmox-template-build-*
 │   └── build-template           # Proxmox template creator
 ├── systemd/                     # Systemd service files
 │   ├── image-update@.service    # Service template
-│   ├── image-update@.timer      # Timer template
-│   └── image-update-enhanced@.service  # Enhanced service version
+│   └── image-update@.timer      # Timer template
 ├── snippets/                    # Cloud-init configurations
 │   └── vendor-data.yaml         # Default cloud-init setup (qemu-guest-agent)
 ├── scripts/                     # Installation scripts

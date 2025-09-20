@@ -3,10 +3,12 @@
 ## Installation (2 minutes)
 
 ```bash
-# Extract and install
-tar -xzf proxmox-template-scripts.tar.gz
-cd proxmox-template-scripts
-sudo ./install.sh
+# Clone the repository
+git clone https://github.com/your-org/Hercules-Power-Templates.git
+cd Hercules-Power-Templates
+
+# Run the installation script
+sudo ./scripts/install.sh
 ```
 
 ## Create Your First Template (5 minutes)
@@ -15,8 +17,12 @@ sudo ./install.sh
 # 1. Wait for or manually download an image
 sudo image-update ubuntu-22 --remove
 
-# 2. Create a template
+# 2. Create a template (Ubuntu uses .img)
 sudo build-template -i 9022 -n ubuntu22 --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+
+# OR for Debian (uses .qcow2)
+sudo image-update debian-12 --remove
+sudo build-template -i 9120 -n debian12 --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
 
 # 3. Verify template was created
 qm list | grep template
@@ -30,9 +36,19 @@ systemctl list-timers | grep image-update
 
 # Manual image download
 image-update ubuntu-22 --remove
+image-update debian-12 --remove
 
-# Create template with custom settings
-build-template --cpu-cores 2 --memory 2048 -i 9024 -n ubuntu24 --img /path/to/image.img
+# Create Ubuntu template with custom settings (.img)
+build-template --cpu-cores 2 --memory 2048 -i 9024 -n ubuntu24 --img /var/lib/vz/template/iso/ubuntu-24.04-server-cloudimg-amd64.img
+
+# Create Debian template with custom settings (.qcow2)
+build-template --cpu-cores 2 --memory 2048 -i 9120 -n debian12 --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
+
+# Create template with SSH keys for secure access
+build-template --ssh-keys ~/.ssh/id_rsa.pub -i 9023 -n ubuntu22-ssh --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+
+# Create template with custom username
+build-template --ci-user admin --ssh-keys ~/.ssh/id_rsa.pub -i 9026 -n admin-template --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
 
 # View logs
 journalctl -u image-update@ubuntu-22.service -f

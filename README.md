@@ -38,17 +38,20 @@ This package provides two main components:
 ## Package Contents
 
 ```text
-proxmox-template-scripts/
+Hercules-Power-Templates/
 ├── bin/
 │   ├── image-update          # Cloud image download script
 │   └── build-template        # Template creation script
+├── scripts/
+│   ├── install.sh            # Automated installation script
+│   ├── image-update.sh       # Development copy for linting
+│   └── build-template.sh     # Development copy for linting
 ├── systemd/
 │   ├── image-update@.service # Systemd service template
 │   └── image-update@.timer   # Systemd timer template
 ├── snippets/
 │   └── vendor-data.yaml      # Cloud-init configuration
 ├── docs/
-├── install.sh                # Automated installation script
 └── README.md                 # This file
 ```
 
@@ -56,16 +59,16 @@ proxmox-template-scripts/
 
 ### Automated Installation (Recommended)
 
-1. Extract the package:
+1. Clone the repository:
 
    ```bash
-   tar -xzf proxmox-template-scripts.tar.gz
-   cd proxmox-template-scripts
+   git clone https://github.com/your-org/Hercules-Power-Templates.git
+   cd Hercules-Power-Templates
    ```
 
 2. Run the installation script:
    ```bash
-   ./install.sh
+   ./scripts/install.sh
    ```
 
 ### Manual Installation
@@ -129,19 +132,33 @@ image-update ubuntu-22 --storage /custom/path
 **Basic template creation:**
 
 ```bash
-build-template -i 9000 -n ubuntu22 --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+# Ubuntu (uses .img extension)
+build-template -i 9022 -n ubuntu22 --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+
+# Debian (uses .qcow2 extension)
+build-template -i 9120 -n debian12 --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
 ```
 
 **Advanced template with custom specs:**
 
 ```bash
+# Ubuntu 24.04 with custom resources
 build-template \
   --cpu-cores 2 \
   --memory 2048 \
   --storage local-lvm \
   --net-bridge vmbr0 \
-  -i 9001 -n ubuntu24-template \
+  -i 9024 -n ubuntu24-template \
   --img /var/lib/vz/template/iso/ubuntu-24.04-server-cloudimg-amd64.img
+
+# Debian 12 with custom resources
+build-template \
+  --cpu-cores 2 \
+  --memory 4096 \
+  --storage local-lvm \
+  --net-bridge vmbr0 \
+  -i 9120 -n debian12-template \
+  --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
 ```
 
 **Dual network template:**
@@ -152,6 +169,41 @@ build-template \
   --net2-bridge vmbr1 --net2-ip 10.0.0.100/24 \
   -i 9002 -n ubuntu-dual-net \
   --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+```
+
+**Template with SSH keys:**
+
+```bash
+# Create template with SSH public key authentication
+build-template \
+  --cpu-cores 2 --memory 2048 \
+  --ssh-keys ~/.ssh/id_rsa.pub \
+  -i 9023 -n ubuntu22-ssh \
+  --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+
+# Using multiple SSH keys from authorized_keys file
+build-template \
+  --ssh-keys /home/admin/.ssh/authorized_keys \
+  -i 9025 -n secure-template \
+  --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
+```
+
+**Template with custom cloud-init username:**
+
+```bash
+# Create template with custom username (default is usually 'ubuntu' or 'debian')
+build-template \
+  --ci-user admin \
+  --ssh-keys ~/.ssh/id_rsa.pub \
+  -i 9026 -n custom-user-template \
+  --img /var/lib/vz/template/iso/ubuntu-22.04-server-cloudimg-amd64.img
+
+# Set a specific username for automation
+build-template \
+  --ci-user ansible \
+  --cpu-cores 2 --memory 2048 \
+  -i 9027 -n ansible-ready \
+  --img /var/lib/vz/template/iso/debian-12-generic-amd64.qcow2
 ```
 
 ## Configuration
@@ -229,14 +281,17 @@ conflicts.
 ### Check Image Updates
 
 ```bash
-# View recent downloads
+# View recent downloads (notice different extensions)
 ls -la /var/lib/vz/template/iso/
+# Ubuntu files: *.img
+# Debian/CentOS/Fedora files: *.qcow2
 
 # Check last update times
 systemctl list-timers | grep image-update
 
 # View service logs
 journalctl -u image-update@ubuntu-22.service
+journalctl -u image-update@debian-12.service
 ```
 
 ### Check Templates
