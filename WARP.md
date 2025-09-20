@@ -29,14 +29,18 @@ The project uses mise for tool management. Key tools available:
 ### Linting Commands
 
 ```bash
-# Lint shell scripts
-shellcheck bin/image-update bin/build-template
+# Run all linting tasks via mise
+mise run lint
 
-# Format code
-prettier --write .
+# Run individual linting tasks
+mise run lint:shellcheck  # Shell script linting
+mise run lint:prettier    # Code formatting check
+mise run lint:pre-commit  # All pre-commit hooks
 
-# Check all scripts in development
-fd -e sh -e bash -x shellcheck {}
+# Manual linting (without mise)
+shellcheck scripts/*.sh
+prettier --check .
+pre-commit run --all-files
 ```
 
 ## Core Architecture
