@@ -63,10 +63,10 @@ On your Proxmox host, run:
 
 ```bash
 # Using curl
-curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+curl -fsSL https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 
 # Or using wget
-wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+wget -qO- https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 ```
 
 ### Verified Installation
@@ -75,7 +75,7 @@ For security-conscious users who want to review the script first:
 
 ```bash
 # Download and review the installer
-wget https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh
+wget https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh
 less install.sh
 
 # Run the installer
@@ -89,7 +89,7 @@ For development or customization:
 1. Clone the repository (requires git):
 
    ```bash
-   git clone https://github.com/YOUR-ORG/Hercules-Power-Templates.git
+   git clone https://github.com/basher83/Hercules-Power-Templates.git
    cd Hercules-Power-Templates
    ```
 

@@ -56,3 +56,4 @@ node_modules/
 # Infisical scan reports (if generated) - but track the baseline
 .infisical-scan-report.*
 !.infisical-baseline.json
+release/

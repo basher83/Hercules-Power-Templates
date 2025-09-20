@@ -6,10 +6,10 @@ On your Proxmox host, simply run:
 
 ```bash
 # Quick install with curl
-curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+curl -fsSL https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 
 # Or with wget
-wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+wget -qO- https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 ```
 
 No git required! The installer downloads everything needed.

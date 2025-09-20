@@ -6,18 +6,18 @@
 # directly from a release archive without requiring git on the Proxmox host.
 #
 # Usage:
-#   curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | bash
-#   wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | bash
+#   curl -fsSL https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | bash
+#   wget -qO- https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | bash
 #
 # Or download and review first:
-#   wget https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh
+#   wget https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh
 #   less install.sh
 #   bash install.sh
 
 set -euo pipefail
 
 # Configuration
-REPO_OWNER="${REPO_OWNER:-YOUR-ORG}"
+REPO_OWNER="${REPO_OWNER:-basher83}"
 REPO_NAME="${REPO_NAME:-Hercules-Power-Templates}"
 INSTALL_VERSION="${INSTALL_VERSION:-latest}"
 GITHUB_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}"
