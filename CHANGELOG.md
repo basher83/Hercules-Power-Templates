@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
+#### Documentation & Attribution
+
+- **Enhancement blocks**: Comprehensive documentation blocks added to all scripts to respect original author's work
+  - Added enhancement blocks to `image-update` and `build-template` scripts
+  - Documents all improvements with clear attribution to original proxmox-template-scripts by Taylor Fore
+  - Includes proper links to coding standards documentation (https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md)
+  - Documents dual network interface support (`--net2`) functionality with detailed feature descriptions
+
+## [1.0.0] - 2025-09-20
+
+### Added
+
 #### Project Infrastructure & Tooling
 
 - **Pre-commit hooks**: Comprehensive pre-commit configuration with multiple quality checks

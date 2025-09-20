@@ -5,7 +5,8 @@
 # Designed for unattended execution via systemd timers
 #
 # Original source: https://github.com/trfore/proxmox-template-scripts
-# Enhanced with production-ready features following CODING_STANDARDS.md
+# Enhanced with production-ready features following
+# https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md
 #
 # Copyright 2022 Taylor Fore
 # Enhanced 2025 - Production improvements
@@ -23,7 +24,8 @@
 # limitations under the License.
 
 # ====================================================================
-# ENHANCEMENT 1: Proper error handling per CODING_STANDARDS.md
+# ENHANCEMENT 1: Proper error handling per
+# https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md
 # - Added set -euo pipefail for strict error handling
 # - Added error trap to capture line numbers on failure
 # ====================================================================
@@ -31,7 +33,8 @@ set -euo pipefail
 trap 'echo "Error occurred at line $LINENO. Exit code: $?" >&2' ERR
 
 # ====================================================================
-# ENHANCEMENT 2: Logging Standards (CODING_STANDARDS.md Section 3)
+# ENHANCEMENT 2: Logging Standards
+# (https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md Section 3)
 # - Comprehensive logging to /var/log/ with timestamps
 # - Dual console/file output for systemd journal + persistent logs
 # - Fallback to /tmp if /var/log not writable
@@ -80,7 +83,8 @@ log_debug() {
 }
 
 # ====================================================================
-# ENHANCEMENT 3: Process Management (CODING_STANDARDS.md Section 8)
+# ENHANCEMENT 3: Process Management
+# (https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md Section 8)
 # - Lock file to prevent concurrent execution
 # - Important for systemd timer + manual runs
 # ====================================================================
@@ -98,7 +102,8 @@ acquire_lock() {
 }
 
 # ====================================================================
-# ENHANCEMENT 4: Cleanup Pattern (CODING_STANDARDS.md Section 5)
+# ENHANCEMENT 4: Cleanup Pattern
+# (https://raw.githubusercontent.com/basher83/automation-scripts/refs/heads/main/CODING_STANDARDS.md Section 5)
 # - Comprehensive cleanup trap for all temporary resources
 # - Status reporting on exit
 # ====================================================================
@@ -569,6 +574,12 @@ function main() {
 
   readonly file_basename
 
+  # ====================================================================
+  # ENHANCEMENT 8: Preserve original file extensions
+  # - Keeps .img for Ubuntu, .qcow2 for Debian/CentOS/Fedora
+  # - Fixes checksum verification mismatches
+  # - Maintains compatibility with different image formats
+  # ====================================================================
   # Preserve the original extension for checksum correctness
   download_name="${file_basename}.${file_name##*.}"
   readonly download_name

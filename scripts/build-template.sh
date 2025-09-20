@@ -17,9 +17,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ====================================================================
+# ENHANCEMENT 1: Proper error handling
+# - Added set -euo pipefail for strict error handling
+# - Added error trap to capture line numbers on failure
+# ====================================================================
 set -euo pipefail
 trap 'echo "Error occurred at line $LINENO. Exit code: $?" >&2' ERR
 
+# ====================================================================
+# ENHANCEMENT 2: Comprehensive logging
+# - Added file-based logging to /var/log with fallback to /tmp
+# - Color-coded output for better readability
+# - Timestamps in log files for debugging
+# ====================================================================
 # Logging setup
 LOG_FILE="/var/log/proxmox-template-build-$(date +%Y%m%d_%H%M%S).log"
 if ! touch "$LOG_FILE" 2>/dev/null; then
@@ -56,6 +67,12 @@ log_error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $1" >> "$LOG_FILE"
 }
 
+# ====================================================================
+# ENHANCEMENT 3: True dry-run mode support
+# - Added run() wrapper function for all mutating commands
+# - Ensures no actual changes in dry-run mode
+# - Shows what would be executed without side effects
+# ====================================================================
 # Dry-run wrapper function
 run() {
     if [[ "$DRY_RUN" == "true" ]]; then
@@ -99,6 +116,24 @@ VM_NET_TYPE=${VM_NET_TYPE:-"virtio"}
 VM_NET_VLAN=${VM_NET_VLAN:-""}
 VM_NET_IP=${VM_NET_IP:-"dhcp"}
 VM_NET_GW=${VM_NET_GW:-""}
+
+# ====================================================================
+# ENHANCEMENT 5: Dual network interface support
+# Author: basher83
+# Date: September 2025
+#
+# This enhancement extends the original script to support dual network
+# interfaces on Proxmox VMs. This is particularly useful for VMs that
+# need to span multiple network segments (e.g., management + data networks).
+#
+# Features:
+# - Second network bridge (--net2-bridge)
+# - Independent VLAN tagging for second interface (--net2-vlan)
+# - Separate IP configuration for second interface (--net2-ip, --net2-gw)
+# - Support for both DHCP and static IP on second interface
+#
+# Based on original work from proxmox-template-scripts by Taylor Fore
+# ====================================================================
 VM_NET2_BRIDGE=${VM_NET2_BRIDGE:-""}
 VM_NET2_TYPE=${VM_NET2_TYPE:-"virtio"}
 VM_NET2_VLAN=${VM_NET2_VLAN:-""}
@@ -109,6 +144,12 @@ VM_RESIZE=${VM_RESIZE:-"1G"}
 VM_SCSIHW=${VM_SCSIHW:-"virtio-scsi-pci"}
 VM_STORAGE=${VM_STORAGE:-"local-lvm"}
 VM_VENDOR_FILE=${VM_VENDOR_FILE:-"vendor-data.yaml"}
+# ====================================================================
+# ENHANCEMENT 4: SSH key injection and custom cloud-init username
+# - Added VM_SSH_KEYS for SSH public key injection
+# - Added VM_CI_USER for custom cloud-init username
+# - Integrates with Proxmox cloud-init for secure access
+# ====================================================================
 VM_SSH_KEYS=${VM_SSH_KEYS:-""}
 VM_CI_USER=${VM_CI_USER:-""}  # Cloud-init username
 DRY_RUN=${DRY_RUN:-false}
@@ -448,6 +489,11 @@ function main() {
     qm_cmd="${qm_cmd},tag=${VM_NET_VLAN}"
   fi
 
+  # ====================================================================
+  # ENHANCEMENT 5: Second network interface configuration
+  # This code implements dual network support for VMs that need to span
+  # multiple network segments or require network isolation between services.
+  # ====================================================================
   # Add second network interface if bridge is specified
   if [ -n "${VM_NET2_BRIDGE}" ]; then
     qm_cmd="${qm_cmd} \
@@ -493,6 +539,11 @@ function main() {
 
   local cloudinit_cmd="/usr/sbin/qm set ${VM_ID} --ide2 ${VM_STORAGE}:cloudinit --ipconfig0 ${ipconfig0}"
 
+  # ====================================================================
+  # ENHANCEMENT 5: Second network interface cloud-init configuration
+  # Configures IP settings for the second network interface through
+  # Proxmox cloud-init. Supports both DHCP and static IP configuration.
+  # ====================================================================
   # Add ipconfig1 if second network interface is configured
   if [ -n "${VM_NET2_BRIDGE}" ]; then
     local ipconfig1=""
@@ -513,6 +564,11 @@ function main() {
   # Complete the command
   cloudinit_cmd="${cloudinit_cmd} --citype nocloud --cicustom vendor=local:snippets/${VM_VENDOR_FILE}"
 
+  # ====================================================================
+  # ENHANCEMENT: Custom cloud-init username support
+  # - Allows setting custom default username instead of distro defaults
+  # - Useful for standardizing usernames across templates
+  # ====================================================================
   # Add cloud-init username if provided
   if [ -n "${VM_CI_USER}" ]; then
     cloudinit_cmd="${cloudinit_cmd} --ciuser ${VM_CI_USER}"
@@ -530,6 +586,12 @@ function main() {
     run /usr/sbin/qm set "${VM_ID}" --efidisk0 "${VM_STORAGE}":1,efitype=4m,pre-enrolled-keys=1
   fi
 
+  # ====================================================================
+  # ENHANCEMENT: SSH key injection for secure access
+  # - Injects SSH public keys via Proxmox cloud-init
+  # - Enables passwordless SSH access to VMs
+  # - Supports both individual keys and authorized_keys files
+  # ====================================================================
   # add SSH keys if provided
   if [ -n "${VM_SSH_KEYS}" ]; then
     log_info "Adding SSH keys from ${VM_SSH_KEYS}"

@@ -57,9 +57,22 @@ Hercules-Power-Templates/
 
 ## Installation
 
-### Quick Install (Recommended)
+**Trust but verify** - Never blindly run scripts from the internet. Always review them first.
 
-On your Proxmox host, run:
+### Verified Installation (Recommended)
+
+```bash
+# Download the installer
+wget https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh
+
+# Review the script
+less install.sh
+
+# Run after verification
+sudo bash install.sh
+```
+
+### Quick Install
 
 ```bash
 # Using curl
@@ -69,24 +82,11 @@ curl -fsSL https://github.com/basher83/Hercules-Power-Templates/releases/latest/
 wget -qO- https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
 ```
 
-### Verified Installation
-
-For security-conscious users who want to review the script first:
-
-```bash
-# Download and review the installer
-wget https://github.com/basher83/Hercules-Power-Templates/releases/latest/download/install.sh
-less install.sh
-
-# Run the installer
-sudo bash install.sh
-```
-
 ### Development Installation
 
 For development or customization:
 
-1. Clone the repository (requires git):
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/basher83/Hercules-Power-Templates.git
@@ -291,19 +291,24 @@ Modify `/var/lib/vz/snippets/vendor-data.yaml` to customize behavior.
 
 ## Cluster Replication
 
-### Option 1: Image Sync (Recommended)
+### Option 1: Image Sync
 
-Add rsync to sync images between clusters:
+Add rsync to sync images between hosts.
 
 ```bash
-# Add to crontab or systemd timer
+# Add to systemd timer
 rsync -avz /var/lib/vz/template/iso/ root@cluster2:/var/lib/vz/template/iso/
 ```
 
 ### Option 2: Independent Setup
 
-Deploy this package on each cluster with staggered timing to avoid bandwidth
-conflicts.
+Deploy this package on each cluster with staggered timing to avoid bandwidth conflicts.
+
+### Option 3: If using Terraform, have Terraform copy the images to the other hosts.
+
+For examples see my other repositories:
+[Nomad/Consul cluster](https://github.com/basher83/terraform-homelab)
+[Vault cluster](https://github.com/basher83/Hercules-Vault-Infra)
 
 ## Monitoring
 
