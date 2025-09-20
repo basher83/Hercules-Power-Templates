@@ -56,6 +56,15 @@ log_error() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $1" >> "$LOG_FILE"
 }
 
+# Dry-run wrapper function
+run() {
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would run: $*"
+    else
+        "$@"
+    fi
+}
+
 # Cleanup function
 VM_CREATION_STARTED=false
 cleanup() {
@@ -101,6 +110,7 @@ VM_SCSIHW=${VM_SCSIHW:-"virtio-scsi-pci"}
 VM_STORAGE=${VM_STORAGE:-"local-lvm"}
 VM_VENDOR_FILE=${VM_VENDOR_FILE:-"vendor-data.yaml"}
 VM_SSH_KEYS=${VM_SSH_KEYS:-""}
+VM_CI_USER=${VM_CI_USER:-""}  # Cloud-init username
 DRY_RUN=${DRY_RUN:-false}
 
 function err() {
@@ -151,6 +161,7 @@ function help() {
     --storage, -s   Specify the VM storage (default: 'local-lvm')
     --vendor-file   Specify the cloud-init vendor file (default: 'vendor-data.yaml')
     --ssh-keys      Path to SSH public keys file to inject
+    --ci-user       Cloud-init username for the default user
     --dry-run       Test mode - show what would be done without making changes
 
   Using Environment Variables:
@@ -187,7 +198,7 @@ function main() {
   fi
 
   OPTIONS=hb:i:m:n:s:
-  LONGOPTS=help,bios:,cpu-cores:,cpu-sockets:,cpu-type:,id:,img:,image:,machine:,memory:,name:,net-bridge:,net-type:,net-vlan:,net-ip:,net-gw:,net2-bridge:,net2-type:,net2-vlan:,net2-ip:,net2-gw:,os:,resize:,scsihw:,storage:,vendor-file:,ssh-keys:,dry-run
+  LONGOPTS=help,bios:,cpu-cores:,cpu-sockets:,cpu-type:,id:,img:,image:,machine:,memory:,name:,net-bridge:,net-type:,net-vlan:,net-ip:,net-gw:,net2-bridge:,net2-type:,net2-vlan:,net2-ip:,net2-gw:,os:,resize:,scsihw:,storage:,vendor-file:,ssh-keys:,ci-user:,dry-run
   NOARG_OPTS=(-h --help --dry-run)
 
   TEMP=$(getopt -n "${0##*/}" -o $OPTIONS --long $LONGOPTS -- "${@}") || exit 2
@@ -327,6 +338,11 @@ function main() {
       shift 2
       continue
       ;;
+    --ci-user)
+      VM_CI_USER=${2}
+      shift 2
+      continue
+      ;;
     --dry-run)
       DRY_RUN=true
       shift
@@ -453,14 +469,14 @@ function main() {
   fi
 
   # import the cloud image
-  /usr/sbin/qm disk import "${VM_ID}" "${VM_IMAGE}" "${VM_STORAGE}"
+  run /usr/sbin/qm disk import "${VM_ID}" "${VM_IMAGE}" "${VM_STORAGE}"
 
   # attach the disk to the VM and set it as boot
-  /usr/sbin/qm set "${VM_ID}" --boot order=scsi0 \
+  run /usr/sbin/qm set "${VM_ID}" --boot order=scsi0 \
     --scsi0 "${VM_STORAGE}":vm-"${VM_ID}"-disk-0,cache=writeback,discard=on,ssd=1
 
   # increase the disk image size
-  /usr/sbin/qm resize "${VM_ID}" scsi0 +"${VM_RESIZE}"
+  run /usr/sbin/qm resize "${VM_ID}" scsi0 +"${VM_RESIZE}"
 
   # configure cloud-init drive
   local ipconfig0=""
@@ -497,16 +513,31 @@ function main() {
   # Complete the command
   cloudinit_cmd="${cloudinit_cmd} --citype nocloud --cicustom vendor=local:snippets/${VM_VENDOR_FILE}"
 
+  # Add cloud-init username if provided
+  if [ -n "${VM_CI_USER}" ]; then
+    cloudinit_cmd="${cloudinit_cmd} --ciuser ${VM_CI_USER}"
+  fi
+
   # Execute the command
-  eval "${cloudinit_cmd}"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    log_info "[DRY-RUN] Would run: ${cloudinit_cmd}"
+  else
+    eval "${cloudinit_cmd}"
+  fi
 
   if [ "$VM_BIOS" = "ovmf" ]; then
     # add UEFI disk
-    /usr/sbin/qm set "${VM_ID}" --efidisk0 "${VM_STORAGE}":1,efitype=4m,pre-enrolled-keys=1
+    run /usr/sbin/qm set "${VM_ID}" --efidisk0 "${VM_STORAGE}":1,efitype=4m,pre-enrolled-keys=1
+  fi
+
+  # add SSH keys if provided
+  if [ -n "${VM_SSH_KEYS}" ]; then
+    log_info "Adding SSH keys from ${VM_SSH_KEYS}"
+    run /usr/sbin/qm set "${VM_ID}" --sshkey "${VM_SSH_KEYS}"
   fi
 
   # convert the VM into a template
-  /usr/sbin/qm template "${VM_ID}"
+  run /usr/sbin/qm template "${VM_ID}"
 
   exit
 }
