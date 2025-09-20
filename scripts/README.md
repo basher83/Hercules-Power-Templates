@@ -4,15 +4,17 @@ This directory contains development versions of the main scripts and the install
 
 ## Script Overview
 
-| Script              | Purpose                       | Production Location   |
-| ------------------- | ----------------------------- | --------------------- |
-| `install.sh`        | Automated installation script | N/A (runs from here)  |
-| `image-update.sh`   | Cloud image downloader        | `/bin/image-update`   |
-| `build-template.sh` | VM template creator           | `/bin/build-template` |
+| Script               | Purpose                           | Production Location    |
+| -------------------- | --------------------------------- | ---------------------- |
+| `install.sh`         | Local installation script         | N/A (runs from here)   |
+| `install-remote.sh`  | Remote installer for releases     | Included in releases   |
+| `prepare-release.sh` | Creates release archives          | N/A (development tool) |
+| `image-update.sh`    | Cloud image downloader (dev copy) | `/bin/image-update`    |
+| `build-template.sh`  | VM template creator (dev copy)    | `/bin/build-template`  |
 
 ## Installation Script: `install.sh`
 
-Automated installer for deploying the Proxmox template scripts on a Proxmox VE host.
+Local installation script for deploying from a cloned repository during development.
 
 ### Usage
 
@@ -53,6 +55,96 @@ sudo ./install.sh
 - `0` - Success
 - `1` - Not running as root
 - `2` - Installation error
+
+## Remote Installation Script: `install-remote.sh`
+
+Downloads and installs the latest release from GitHub without requiring git on the Proxmox host.
+
+### Usage
+
+This script is designed to be run directly from the web:
+
+```bash
+# Using curl
+curl -fsSL https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+
+# Using wget
+wget -qO- https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh | sudo bash
+
+# Download and review first (recommended)
+wget https://github.com/YOUR-ORG/Hercules-Power-Templates/releases/latest/download/install.sh
+less install.sh
+sudo bash install.sh
+```
+
+### What It Does
+
+1. **Downloads release archive** from GitHub releases
+2. **Extracts to temporary directory**
+3. **Installs all components** (scripts, systemd units, cloud-init config)
+4. **Configures timers** with interactive prompts
+5. **Cleans up** temporary files
+
+### Environment Variables
+
+- `REPO_OWNER` - GitHub organization (default: YOUR-ORG)
+- `REPO_NAME` - Repository name (default: Hercules-Power-Templates)
+- `INSTALL_VERSION` - Version to install (default: latest)
+
+### Requirements
+
+- Root access
+- `curl` and `tar` installed
+- Internet connection to GitHub
+
+## Release Preparation Script: `prepare-release.sh`
+
+Creates release archives for distribution via GitHub releases.
+
+### Usage
+
+```bash
+# Create release with specific version
+./scripts/prepare-release.sh v1.2.3
+
+# Create release with auto-detected version (from git)
+./scripts/prepare-release.sh
+```
+
+### What It Creates
+
+The script generates a `release/` directory containing:
+
+- `hercules-power-templates.tar.gz` - Main release archive
+- `hercules-power-templates.tar.gz.sha256` - Archive checksum
+- `install.sh` - Remote installer script
+- `install.sh.sha256` - Installer checksum
+
+### Archive Contents
+
+The release archive includes only essential files:
+
+- `bin/` - Production scripts
+- `systemd/` - Service and timer units
+- `snippets/` - Cloud-init configuration
+- `docs/quick-start.md` - Quick start guide
+- `README.md`, `LICENSE`, `CHANGELOG.md`
+- `VERSION` - Version information
+- `install-local.sh` - Local installation script
+
+### Release Process
+
+1. **Prepare release**: `./scripts/prepare-release.sh v1.0.0`
+2. **Test locally**: Extract and test the archive
+3. **Create git tag**: `git tag v1.0.0 && git push origin v1.0.0`
+4. **Upload to GitHub**: Create release and attach files from `release/`
+5. **Update URLs**: Replace YOUR-ORG in documentation (first release only)
+
+### Version Detection
+
+- If version argument provided: Uses that version
+- If no argument: Uses `git describe --tags --always --dirty`
+- Fallback: Uses "dev" if git not available
 
 ## Image Update Script: `image-update.sh`
 
