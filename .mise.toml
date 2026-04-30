@@ -34,14 +34,3 @@ depends = ["fix:prettier"]
 description = "Auto-fix code formatting with prettier"
 run = "prettier --write ."
 tools = { "prettier" = "3.6.2" }
-
-# Pre-commit workflow tasks - git hook management
-[tasks."pre-commit"]
-description = "Run all pre-commit hooks"
-run = "pre-commit run --all-files"
-tools = { "pre-commit" = "4.3.0" }
-
-[tasks."pre-commit:install"]
-description = "Install pre-commit hooks"
-run = "pre-commit install"
-tools = { "pre-commit" = "4.3.0" }
